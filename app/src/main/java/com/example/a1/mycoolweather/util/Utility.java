@@ -9,6 +9,7 @@ import com.example.a1.mycoolweather.gson.Weather;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Utility {
@@ -89,14 +90,16 @@ public class Utility {
                 {
                     JSONObject jsonObject = counties.getJSONObject(i);
                     County county = new County();
-                    county.setCountyCode(jsonObject.getInt("id"));
+                    //county.setCountyCode(jsonObject.getInt("id"));
                     county.setCountyName(jsonObject.getString("name"));
+                    county.setWeatherId(jsonObject.getString("weather_id"));
                     county.setCityId(cityId);
+
                     county.save();
                 }
                 return true;
             }
-            catch (Exception e)
+            catch (JSONException e)
             {
                 e.printStackTrace();
             }

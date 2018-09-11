@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Forecast {
 
-    @SerializedName("data")
-    public String data;
+    @SerializedName("date")
+    public String date;
 
     @SerializedName("cond")
     public Cond cond;

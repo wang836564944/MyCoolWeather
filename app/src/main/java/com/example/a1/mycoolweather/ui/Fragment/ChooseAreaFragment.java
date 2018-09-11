@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +87,7 @@ public class ChooseAreaFragment extends Fragment {
                 {
                     String weatherId = countyList.get(position).getWeatherId();
                     Intent intent = new Intent(getActivity(), WeatherActiviy.class);
+                    Log.d("ChooseAreaFragment","weather id :" + weatherId);
                     intent.putExtra("weather_id",weatherId);
                     startActivity(intent);
                     getActivity().finish();
@@ -220,6 +222,7 @@ public class ChooseAreaFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 //接收到返回的信息
                 String responseText = response.body().string();
+                Log.d("ChooseAreaFragment","response :" + responseText);
                 boolean result = false;
 
                 //判断接收到的信息是否处理成功
