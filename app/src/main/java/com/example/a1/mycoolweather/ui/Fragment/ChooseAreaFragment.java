@@ -1,6 +1,7 @@
 package com.example.a1.mycoolweather.ui.Fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.example.a1.mycoolweather.R;
 import com.example.a1.mycoolweather.db.City;
 import com.example.a1.mycoolweather.db.County;
 import com.example.a1.mycoolweather.db.Province;
+import com.example.a1.mycoolweather.ui.Activity.WeatherActiviy;
 import com.example.a1.mycoolweather.util.HttpUtil;
 import com.example.a1.mycoolweather.util.Utility;
 
@@ -82,7 +84,11 @@ public class ChooseAreaFragment extends Fragment {
                 }
                 else if(currentLevel == LEVEL_COUNTY)
                 {
-                    Toast.makeText(getContext(),"目前只能到和这个区域哦~",Toast.LENGTH_SHORT).show();
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActiviy.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });

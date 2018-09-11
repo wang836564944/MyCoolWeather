@@ -1,6 +1,9 @@
 package com.example.a1.mycoolweather.ui.Activity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,6 +20,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //initView();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(preferences.getString("weather",null) != null)
+        {
+            Intent intent = new Intent(this, WeatherActiviy.class);
+            startActivity(intent);
+            finish();
+        }
     }
     public void initView()
     {
