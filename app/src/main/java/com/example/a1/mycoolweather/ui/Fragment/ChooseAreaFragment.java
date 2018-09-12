@@ -19,6 +19,7 @@ import com.example.a1.mycoolweather.R;
 import com.example.a1.mycoolweather.db.City;
 import com.example.a1.mycoolweather.db.County;
 import com.example.a1.mycoolweather.db.Province;
+import com.example.a1.mycoolweather.ui.Activity.MainActivity;
 import com.example.a1.mycoolweather.ui.Activity.WeatherActiviy;
 import com.example.a1.mycoolweather.util.HttpUtil;
 import com.example.a1.mycoolweather.util.Utility;
@@ -86,11 +87,22 @@ public class ChooseAreaFragment extends Fragment {
                 else if(currentLevel == LEVEL_COUNTY)
                 {
                     String weatherId = countyList.get(position).getWeatherId();
-                    Intent intent = new Intent(getActivity(), WeatherActiviy.class);
-                    Log.d("ChooseAreaFragment","weather id :" + weatherId);
-                    intent.putExtra("weather_id",weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+                    Log.d("ChooseAreaFragment","Weather id : " + weatherId);
+                    if(getActivity() instanceof MainActivity)
+                    {
+                        Intent intent = new Intent(getActivity(), WeatherActiviy.class);
+                        Log.d("ChooseAreaFragment","weather id :" + weatherId);
+                        intent.putExtra("weather_id",weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                    else if(getActivity() instanceof WeatherActiviy)
+                    {
+                        WeatherActiviy weatherActiviy = (WeatherActiviy) getActivity();
+                        weatherActiviy.mDrawerLayout.closeDrawers();
+                        weatherActiviy.swipeRefreshLayout.setRefreshing(true);
+                        weatherActiviy.requestWeather(weatherId);
+                    }
                 }
             }
         });

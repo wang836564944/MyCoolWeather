@@ -5,10 +5,14 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -42,6 +46,9 @@ public class WeatherActiviy extends AppCompatActivity {
     private TextView mComfortText;//舒适度
     private TextView mCarWashText;//洗车指数
     private TextView mSportText;//运动建议
+    public SwipeRefreshLayout swipeRefreshLayout;//刷新界面
+    public DrawerLayout mDrawerLayout;//滑动界面
+    private Button exchangeCityBt;//切换城市界面
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +80,11 @@ public class WeatherActiviy extends AppCompatActivity {
         mCarWashText = (TextView)findViewById(R.id.car_wash_text);
         mSportText = (TextView)findViewById(R.id.sport_text);
         mBingPic = (ImageView)findViewById(R.id.bing_pic_img);
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swip_refresh_layout);
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        exchangeCityBt = (Button)findViewById(R.id.exchange_city_bt);
+
+        final String weatherId;
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherMessage = preferences.getString("weather",null);
         String bingPictureUrl = preferences.getString("bing_picture",null);
@@ -87,7 +99,7 @@ public class WeatherActiviy extends AppCompatActivity {
         if(weatherMessage == null)
         {
             //从网络获取
-            String weatherId = getIntent().getStringExtra("weather_id");
+            weatherId = getIntent().getStringExtra("weather_id");
             mWeatherLayout.setVisibility(View.VISIBLE);
             requestWeather(weatherId);
         }
@@ -95,8 +107,31 @@ public class WeatherActiviy extends AppCompatActivity {
         {
             //从本地读取
             Weather weatherInfo = Utility.handWeatherResponse(weatherMessage);
+            weatherId = weatherInfo.basic.weatherId;
             showWeatherInfo(weatherInfo);
         }
+
+        //打开隐藏菜单
+        exchangeCityBt.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override
+            public void onRefresh()
+            {
+                requestWeather(weatherId);
+            }
+        });
+
+
     }
 
     /**
@@ -116,6 +151,7 @@ public class WeatherActiviy extends AppCompatActivity {
                     public void run()
                     {
                         Toast.makeText(WeatherActiviy.this,"天气请求失败QAQ",Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -142,7 +178,7 @@ public class WeatherActiviy extends AppCompatActivity {
                             Toast.makeText(WeatherActiviy.this,"获取天气失败QAQ",Toast.LENGTH_SHORT).show();
                             Log.d("WeatherActivity","Response fail");
                         }
-
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
